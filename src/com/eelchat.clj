@@ -3,7 +3,6 @@
             [com.eelchat.email :as email]
             [com.eelchat.app :as app]
             [com.eelchat.home :as home]
-            [com.eelchat.worker :as worker]
             [com.eelchat.schema :as schema]
             [clojure.test :as test]
             [clojure.tools.logging :as log]
@@ -16,8 +15,7 @@
   [app/plugin
    (biff/authentication-plugin {})
    home/plugin
-   schema/plugin
-   worker/plugin])
+   schema/plugin])
 
 (def routes [["" {:middleware [biff/wrap-site-defaults]}
               (keep :routes plugins)]
@@ -31,7 +29,7 @@
 
 (defn generate-assets! [ctx]
   (biff/export-rum static-pages "target/resources/public")
-  (biff/delete-old-files {:dir "target/resources/public"
+  (biff/delete-old-files {:dir  "target/resources/public"
                           :exts [".html"]}))
 
 (defn on-save [ctx]
@@ -47,12 +45,12 @@
                      (keep :schema plugins)))})
 
 (def initial-system
-  {:biff/plugins #'plugins
-   :biff/send-email #'email/send-email
-   :biff/handler #'handler
-   :biff/malli-opts #'malli-opts
-   :biff.beholder/on-save #'on-save
-   :biff.xtdb/tx-fns biff/tx-fns
+  {:biff/plugins             #'plugins
+   :biff/send-email          #'email/send-email
+   :biff/handler             #'handler
+   :biff/malli-opts          #'malli-opts
+   :biff.beholder/on-save    #'on-save
+   :biff.xtdb/tx-fns         biff/tx-fns
    :com.eelchat/chat-clients (atom #{})})
 
 (defonce system (atom {}))
